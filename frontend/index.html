@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WebSocket Test</title>
+</head>
+<body>
+  <h2>WebSocket Client</h2>
+  
+  <div>
+    <input type="text" id="messageInput" placeholder="Enter message" />
+    <button onclick="sendMessage()">Send</button>
+  </div>
+  
+  <h3>Received Messages:</h3>
+  <div id="messages"></div>ws://localhost:3000
+
+  <script>
+    // Step 1: Establish a WebSocket connection
+    const socket = new WebSocket('ws://localhost:3000');  // Make sure this matches the server's address and port
+
+    // Step 2: Handle the WebSocket connection open event
+    socket.addEventListener('open', (event) => {
+      console.log('WebSocket connection established');
+    });
+
+    // Step 3: Handle incoming messages from the WebSocket server
+    socket.addEventListener('message', (event) => {
+      const messageContainer = document.getElementById('messages');
+      const newMessage = document.createElement('div');
+      newMessage.textContent = 'Server: ' + event.data;
+      messageContainer.appendChild(newMessage);
+    });
+
+    // Step 4: Send messages to the WebSocket server
+    function sendMessage() {
+      const input = document.getElementById('messageInput');
+      const message = input.value;
+      socket.send(message);
+      
+      const messageContainer = document.getElementById('messages');
+      const newMessage = document.createElement('div');
+      newMessage.textContent = 'You: ' + message;
+      messageContainer.appendChild(newMessage);
+
+      input.value = ''; // Clear the input after sending
+    }
+
+    // Step 5: Handle WebSocket errors
+    socket.addEventListener('error', (error) => {
+      console.error('WebSocket Error:', error);
+    });
+
+    // Step 6: Handle WebSocket closure
+    socket.addEventListener('close', (event) => {
+      console.log('WebSocket connection closed');
+    });
+  </script>
+</body>
+</html>
